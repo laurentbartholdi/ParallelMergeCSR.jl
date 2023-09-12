@@ -8,7 +8,7 @@ using LinearAlgebra: Adjoint,
                      transpose, 
                      fill!
 using SparseArrays: AbstractSparseMatrixCSC,
-                    DenseInputVecOrMat,
+                    DenseVecOrMat,
                     getcolptr,
                     nonzeros,
                     rowvals, 
@@ -82,11 +82,11 @@ end
 for (T, t) in ((Adjoint, adjoint), (Transpose, transpose))
     @eval begin
     """
-        mul!(C::StridedVecOrMat, xA::$($T){<:Any,<:AbstractSparseMatrixCSC}, B::DenseInputVecOrMat, α::Number, β::Number)
+        mul!(C::StridedVecOrMat, xA::$($T){<:Any,<:AbstractSparseMatrixCSC}, B::DenseVecOrMat, α::Number, β::Number)
     Performs the operation C = xABα + Cβ where xA is an `AbstractSparseMatrixCSC` that has been wrapped by `$($T)`
     (accomplishable by calling `$($t)` on the CSC matrix).
     """
-        function mul!(C::StridedVecOrMat, xA::$T{<:Any,<:AbstractSparseMatrixCSC}, B::DenseInputVecOrMat, α::Number, β::Number)
+        function mul!(C::StridedVecOrMat, xA::$T{<:Any,<:AbstractSparseMatrixCSC}, B::DenseVecOrMat, α::Number, β::Number)
             # obtains the original matrix underneath the "lazy wrapper"
             A = xA.parent
             size(A, 2) == size(C, 1) || throw(DimensionMismatch())
